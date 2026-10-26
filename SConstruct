@@ -201,7 +201,7 @@ env.Append (KML_41CV = File ('nui/nut/41c/41cv.kml'))
 native_env = env.Clone ()
 native_env ['build_target_only'] = 0
 SConscript ('src/SConscript',
-            build_dir = host_build_dir,
+            variant_dir = host_build_dir,
             duplicate = 0,
             exports = {'build_env' : native_env,
                        'native_env' : env})
@@ -281,7 +281,7 @@ if (env ['PLATFORM'] != env ['target']):
         cross_build_env = env.Clone ()
         cross_build_env ['build_target_only'] = 1
         SConscript ('src/SConscript',
-                    build_dir = target_build_dir,
+                    variant_dir = target_build_dir,
                     duplicate = 0,
                     exports = {'build_env': cross_build_env,
                                'native_env' : env})
@@ -292,7 +292,7 @@ if (env ['PLATFORM'] != env ['target']):
 
 if env ['target'] == 'win32':
     SConscript ('win32/dll/SConscript',
-                build_dir = target_build_dir + '/win32/dll',
+                variant_dir = target_build_dir + '/win32/dll',
                 duplicate = 0)
 
     SConscript ('win32/SConscript')
