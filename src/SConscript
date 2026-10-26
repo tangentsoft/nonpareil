@@ -390,6 +390,10 @@ if build_env ['has_debugger_gui']:
 
 nonpareil_env.ParseConfig (pkg_config_cmd + nonpareil_packages)
 nonpareil_env.ParseConfig (sdl_pkg_config_cmd)
+# sdl-config --libs links SDLmain, which expects SDL_main.  Nonpareil has
+# its own main and uses SDL only for audio.
+nonpareil_env['LIBS'] = [lib for lib in nonpareil_env['LIBS']
+                         if lib not in ('SDLmain', '-lSDLmain')]
 nonpareil_env.Append (LIBS = 'm')
 
 csim_env = nonpareil_env.Clone ()
