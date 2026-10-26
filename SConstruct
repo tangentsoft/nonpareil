@@ -158,8 +158,20 @@ if not env ['libdir']:
 # Prepare for SConscription
 #-----------------------------------------------------------------------------
 
+# SCons names macOS "darwin". Building the posix target there is native,
+# not a cross compile.
+def native_target (platform, target):
+    if platform == target:
+        return True
+    return platform == 'darwin' and target == 'posix'
+
+env ['cross'] = not native_target (env ['PLATFORM'], env ['target'])
+
 host_build_dir = 'build/' + env ['PLATFORM']
-target_build_dir = 'build/' + env ['target']
+if env ['cross']:
+    target_build_dir = 'build/' + env ['target']
+else:
+    target_build_dir = host_build_dir
 
 if env ['debug']:
         host_build_dir += '-debug'
@@ -277,7 +289,7 @@ if env ['target'] == 'win32':
 # target platform code if cross-compiling
 #-----------------------------------------------------------------------------
 
-if (env ['PLATFORM'] != env ['target']):
+if env ['cross']:
         cross_build_env = env.Clone ()
         cross_build_env ['build_target_only'] = 1
         SConscript ('src/SConscript',

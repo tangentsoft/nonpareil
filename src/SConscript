@@ -31,7 +31,7 @@ EnsureSConsVersion(0, 98, 0)
 
 build_target_only = build_env ['build_target_only']
 
-cross = build_env ['PLATFORM'] != build_env ['target']
+cross = build_env ['cross']
 
 ming = build_env ['target'] == 'win32'
 
