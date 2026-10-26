@@ -84,6 +84,29 @@ vars.AddVariables (EnumVariable ('target',
 #-----------------------------------------------------------------------------
 
 env = Environment (variables = vars)
+
+# SCons replaces ENV PATH with a short system list that omits Homebrew,
+# so spawned pkg-config and sdl-config would not be found.
+if env['PLATFORM'] == 'darwin':
+    import os
+    import shutil
+    import subprocess
+    bindir = None
+    brew = shutil.which ('brew')
+    if brew:
+        try:
+            prefix = subprocess.check_output ([brew, '--prefix'],
+                                              text = True).strip ()
+            candidate = os.path.join (prefix, 'bin')
+            if os.path.isdir (candidate):
+                bindir = candidate
+        except (OSError, subprocess.CalledProcessError):
+            bindir = None
+    if bindir is None and os.path.isdir ('/opt/homebrew/bin'):
+        bindir = '/opt/homebrew/bin'
+    if bindir:
+        env.PrependENVPath ('PATH', bindir)
+
 vars.Update (env)
 vars.Save (conf_file, env)
 
